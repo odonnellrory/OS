@@ -1,0 +1,99 @@
+# info - combines man and tldr to give you double the info on a command
+
+info () {
+  man "$1" && tldr "$1"  
+}
+
+# lfcd - lf is a terminal based file manager installed on the device, this script allows you to quickly navigate to a location in the terminal by visually seeing the directories.
+# why did I describe lf to myself you fucking weirdo
+
+lfcd () {
+    tmp="$(mktemp)"
+    lf -last-dir-path="$tmp" "$@"
+    if [ -f "$tmp" ]; then
+        dir="$(cat "$tmp")"
+        rm -f "$tmp"
+        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
+    fi
+}
+bindkey -s '^o' 'lfcd\n'
+
+
+
+#bandit - innit
+
+bandit() {
+  local level="bandit$1"
+  local pwfile=~/.overTheWirePasswords.txt
+  local password=$(grep "^$level:" "$pwfile" | cut -d':' -f2)
+
+  if [ -z "$password" ]; then
+    echo "No Password"
+    return 1
+  fi
+
+  sshpass -p "$password" ssh "$level@bandit.labs.overthewire.org" -p 2220
+}
+
+
+#search aliases
+
+searchAliases() {
+  cat ~/.aliases | grep $1
+}
+
+
+
+#change desktop environment
+
+switchde() {
+  local de="$1"
+  local dm=""
+  local session=""
+
+  case "$de" in
+    gnome)
+      dm="gdm"
+      session="gnome-session"
+      ;;
+    xfce)
+      dm="lightdm"
+      session="xfce"
+      ;;
+    *)
+      echo "That ain't gnome or xfce, is it, tit head?"
+      return 1
+      ;;
+  esac
+
+  echo "Switching to $de using $dm..."
+
+  # Disable all known DMs except the target one
+  for other_dm in gdm lightdm; do
+    if [[ "$other_dm" != "$dm" ]]; then
+      sudo systemctl disable "$other_dm.service" >/dev/null 2>&1
+    fi
+  done
+
+  sudo systemctl enable "$dm.service"
+
+  # Set up session if using ~/.xsession
+  echo "exec $session" > ~/.xsession
+
+  echo "Desktop environment set to $de. Rebooting..."
+  systemctl reboot
+}
+
+
+
+#  if [[ "$de" == "xfce" ]]; then
+#    sudo systemctl disable gdm.service
+#    sudo systemctl enable lightdm.service
+#    sudo systemctl reboot
+#  elif [[ "$de" == "gnome" ]]; then
+#    sudo systemctl disable lightdm.service
+#    sudo systemctl enable gdm.service
+#    sudo systemctl reboot
+#  else
+#    echo "switchde xfce|gnome"
+#  fi
