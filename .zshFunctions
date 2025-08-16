@@ -1,13 +1,38 @@
+#Rust Book guessing game
+guessing_game() {
+  cd ~/Projects/Rust/guessing_game/ && cargo run
+}
+
+#reloads zsh shell, essentially the same as typing "source ~/.zshrc"
+sz() {
+  local  messages=(
+    "You suck!"
+    "I hate you!"
+    "You fucking did it!"
+    "Well done, dick head!"
+    "Nice one, pal."
+    "Alright."
+    "Yeah."
+    "..."
+    "I think it worked?"
+    "Something like that."
+    "Having fun?"
+    "Reload me harder."
+    )
+  source ~/.zshrc
+  echo "$messages[RANDOM % ${#messages[@]} + 1]"
+}
+
 # info - combines man and tldr to give you double the info on a command
 
-info () {
+info() {
   man "$1" && tldr "$1"  
 }
 
 # lfcd - lf is a terminal based file manager installed on the device, this script allows you to quickly navigate to a location in the terminal by visually seeing the directories.
 # why did I describe lf to myself you fucking weirdo
 
-lfcd () {
+lfcd() {
     tmp="$(mktemp)"
     lf -last-dir-path="$tmp" "$@"
     if [ -f "$tmp" ]; then
@@ -56,6 +81,10 @@ switchde() {
       dm="gdm"
       session="gnome-session"
       ;;
+    kde)
+      dm="sddm"
+      session="kde"
+      ;;
     xfce)
       dm="lightdm"
       session="xfce"
@@ -97,3 +126,14 @@ switchde() {
 #  else
 #    echo "switchde xfce|gnome"
 #  fi
+
+
+#like lfcd but for yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+  exec zsh
+}
