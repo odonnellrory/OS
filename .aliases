@@ -1,4 +1,7 @@
 alias firefox='nohup firefox >/dev/null 2>&1 & disown; exit'
+alias nixinstall="nix profile install nixpkgs# "
+alias nixrebuild="sudo nixos-rebuild switch"
+alias nixconf="sudo nvim /etc/nixos/configuration.nix"
 alias hyprconfig="nvim ~/.config/hypr/hyprland.conf"
 alias hyprlandconf="nvim ~/.config/hypr/hyprland.conf"
 alias taskrc="nvim ~/.taskrc"
@@ -32,7 +35,7 @@ alias kittycfg="sudo nvim ~/.config/kitty/kitty.conf"
 alias zshrc="nvim ~/.zshrc"
 alias vimrc="vim ~/.vimrc"
 alias sourcezsh="source ~/.zshrc"
-alias c='ctask'
+alias c='clear'
 alias idea='nvim ~/Documents/Projects/workProjects/whatDoIWant.txt'
 alias lsh='ls -dF --group-directories-first .[^.]* .??*'
 alias aliases='nvim ~/.aliases'
