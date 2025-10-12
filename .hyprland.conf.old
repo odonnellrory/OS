@@ -1,0 +1,26 @@
+input {
+  kb_layout = gb
+}
+
+# Use automatic monitor detection for now (prevents black screen / no outputs)
+monitor = ,preferred,auto,1
+
+# Basic must-haves
+bind = SUPER, Return, exec, sh -lc 'alacritty || kitty || foot || xterm'
+bind = SUPER, Q, killactive
+bind = SUPER, F, fullscreen, 0
+bind = SUPER, C, exec, wlogout
+bind = SUPER, V, togglefloating
+bind = SUPER, H, movefocus, l
+bind = SUPER, L, movefocus, r
+bind = SUPER, K, movefocus, u
+bind = SUPER, J, movefocus, d
+
+# Optional: reload config quickly
+bind = SUPER, R, exec, hyprctl reload
+
+# Keep your transparency rules if you like, but they're harmless either way
+windowrulev2 = opacity 1.0 0.5, class:^(?i)(kitty|alacritty)$
+windowrulev2 = noblur, class:^(?i)(kitty|alacritty)$
+EOF
+
