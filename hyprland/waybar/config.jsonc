@@ -1,10 +1,3 @@
-// Waybar config — cleaned to work out-of-the-box without fish, split into clear sections
-// Tested profile: Hyprland + NetworkManager + BlueZ + playerctl + pavucontrol + blueman + nm-connection-editor
-// Notes:
-//  - Replaced custom fish-based modules with built-in ones (e.g., mpris) or neutral actions
-//  - Kept icons/formatting from your original
-//  - Safe commands on click open GUIs instead of shell toggles; swap them later if you want true toggles
-//  - JSONC allows comments like these
 [
   ////////////////////////////////////////////////////////////////////////
   // TOP BAR
@@ -20,37 +13,56 @@
     // ===== Layout =====
     "modules-left": ["hyprland/workspaces", "hyprland/submap"],
     "modules-center": [
-      "clock#time",
-      "custom/separator",
+      //"clock#time",
+      //"custom/separator",
       "clock#week",
       "custom/separator_dot",
       "clock#month",
       "custom/separator",
       "clock#calendar"
     ],
-    "modules-right": ["bluetooth", "network", "group/misc", "custom/logout_menu"],
+    "modules-right": ["cpu",
+      "memory",
+      "disk", "bluetooth", "network", "group/tray_toggle", "custom/logout_menu"],
+
+    // ===== Tray toggle group =====
+    "group/tray_toggle": {
+      "orientation": "horizontal",
+      "modules": [
+      "tray" 
+      ],
+      "drawer": {
+        "transition-duration": 150,
+        "transition-left-to-right": false
+      },
+      "format": "󰍡",          // icon shown on the bar
+      "on-click": "toggle",
+      "start-collapsed": true
+    },
+
+    // The actual tray shown/hidden by the group
+    "tray": { "icon-size": 20, "spacing": 2 },
 
     // ===================== Modules: Hyprland =====================
     "hyprland/workspaces": {
       "on-click": "activate",
       "format": "{icon}",
       "format-icons": {
-        "1": "󰲠",
-        "2": "󰲢",
-        "3": "󰲤",
-        "4": "󰲦",
-        "5": "󰲨",
-        "6": "󰲪",
-        "7": "󰲬",
-        "8": "󰲮",
-        "9": "󰲰",
-        "10": "󰿬",
-        "special": ""
+        "1": "一", "2": "二", "3": "三", "4": "四", "5": "五",
+        "6": "六", "7": "七", "8": "八", "9": "九", "10": "十",
+        "special": "〇", "11": "十一",
+  "12": "十二",
+  "13": "十三",
+  "14": "十四",
+  "15": "十五",
+  "16": "十六",
+  "17": "十七",
+  "18": "十八",
+  "19": "十九",
+  "20": "二十"
       },
       "show-special": true,
-      "persistent-workspaces": {
-        "*": 10
-      }
+      "persistent-workspaces": { "*": 10 }
     },
 
     "hyprland/submap": {
@@ -59,16 +71,11 @@
     },
 
     // ===================== Modules: Clocks =====================
-    "clock#time": {
-      "format": "{:%I:%M %p %Ez}"
-    },
-
+    "clock#time": { "format": "{:%I:%M %p %Ez}" },
     "custom/separator": { "format": "|", "tooltip": false },
     "custom/separator_dot": { "format": "•", "tooltip": false },
-
     "clock#week": { "format": "{:%a}" },
     "clock#month": { "format": "{:%h}" },
-
     "clock#calendar": {
       "format": "{:%F}",
       "tooltip-format": "<tt><small>{calendar}</small></tt>",
@@ -91,9 +98,9 @@
 
     // ===================== Modules: Bluetooth / Network =====================
     "bluetooth": {
-      "format": "󰂯",
-      "format-disabled": "󰂲",
-      "format-connected": "󰂱 {device_alias}",
+      "format": "BT",
+      "format-disabled": "BT: OFF",
+      "format-connected": "BT CONNECTED: {device_alias}",
       "format-connected-battery": "󰂱 {device_alias} (󰥉 {device_battery_percentage}%)",
       "tooltip-format": "{controller_alias}\t{controller_address} ({status})\n\n{num_connections} connected",
       "tooltip-format-disabled": "bluetooth off",
@@ -101,13 +108,12 @@
       "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
       "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t({device_battery_percentage}%)",
       "max-length": 35,
-      // Open a manager instead of fish toggle; swap to a toggle script later if you prefer
       "on-click": "blueman-manager",
       "on-click-right": "bluetoothctl devices Connected"
     },
 
     "network": {
-      "format": "󰤭",
+      "format": "Wi-Fi",
       "format-wifi": "{icon}({signalStrength}%){essid}",
       "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
       "format-disconnected": "󰤫 Disconnected",
@@ -115,53 +121,33 @@
       "tooltip-format-wifi": "SSID: {essid}({signalStrength}%), {frequency} MHz\nInterface: {ifname}\nIP: {ipaddr}\nGW: {gwaddr}\n\n<span color='#a6da95'>{bandwidthUpBits}</span>\t<span color='#ee99a0'>{bandwidthDownBits}</span>\t<span color='#c6a0f6'>󰹹{bandwidthTotalBits}</span>",
       "tooltip-format-disconnected": "<span color='#ed8796'>disconnected</span>",
       "max-length": 35,
-      // Open NM editor; replace with a bash toggle later if you want
       "on-click": "nm-connection-editor",
-      "on-click-right": "alacritty -e btop"
+      "on-click-right": ""
     },
 
-    // ===================== Modules: Misc group (no fish) =====================
-    "group/misc": {
-      "orientation": "horizontal",
-      "modules": [
-        // Built-ins that don't need fish scripts
-        "privacy",
-        "mpris",
-        "idle_inhibitor"
-      ]
+
+
+
+    "cpu": {
+      "format": "CPU {usage}%",
+      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
     },
 
-    // Privacy indicators (audio-in, screenshare)
-    "privacy": {
-      "icon-spacing": 1,
-      "icon-size": 12,
-      "transition-duration": 250,
-      "modules": [{ "type": "audio-in" }, { "type": "screenshare" }]
+    "memory": {
+      "format": "RAM {percentage}%",
+      "tooltip-format": "Main: ({used} GiB/{total} GiB)({percentage}%), available {avail} GiB\nSwap: ({swapUsed} GiB/{swapTotal} GiB)({swapPercentage}%), available {swapAvail} GiB",
+      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
     },
 
-    // MPRIS media (replaces custom/media fish JSON)
-    "mpris": {
-      "format": "{player_icon}{status_icon}",
-      "format-paused": "{player_icon}",
-      "format-playing": "{player_icon}",
-      "player-icons": { "default": "󰎈" },
-      "on-click": "playerctl play-pause",
-      "on-click-right": "playerctl next",
-      "on-click-middle": "playerctl previous",
-      "on-scroll-up": "playerctl volume 0.05+",
-      "on-scroll-down": "playerctl volume 0.05-"
+    "disk": {
+      "format": "DISK {percentage_used}%",
+      "tooltip-format": "({used}/{total})({percentage_used}%) in '{path}', available {free}({percentage_free}%)",
+      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
     },
 
-    // Idle inhibitor
-    "idle_inhibitor": {
-      "format": "{icon}",
-      "format-icons": { "activated": "󰛐", "deactivated": "󰛑" },
-      "tooltip-format-activated": "idle-inhibitor <span color='#a6da95'>on</span>",
-      "tooltip-format-deactivated": "idle-inhibitor <span color='#ee99a0'>off</span>",
-      "start-activated": true
-    },
 
-    // Simple logout launcher (no fish)
+
+    // ===================== Modules: Simple logout =====================
     "custom/logout_menu": {
       "return-type": "json",
       "exec": "echo '{ \"text\":\"󰐥\", \"tooltip\": \"logout / power menu\" }'",
@@ -174,47 +160,34 @@
   // BOTTOM BAR
   ////////////////////////////////////////////////////////////////////////
   {
-    // ===== Main =====
     "name": "bottom_bar",
     "layer": "top",
     "position": "bottom",
     "height": 36,
     "spacing": 4,
 
-    // ===== Layout =====
     "modules-left": ["user"],
     "modules-center": ["hyprland/window"],
-    "modules-right": ["keyboard-state", "hyprland/language"],
+    "modules-right": ["hyprland/language"],
 
-    // ===================== Modules =====================
     "hyprland/window": { "format": "{title}", "max-length": 50 },
 
     "hyprland/language": {
-      "format-en": "🇺🇸 ENG (US)",
-      "format-uk": "🇺🇦 UKR",
-      "format-ru": "🇷🇺 RUS",
-      // If this device name differs on your box, adjust via `hyprctl devices -j`
+      "format-en": "󱄅  Nix OS | ENG (UK)",
       "keyboard-name": "at-translated-set-2-keyboard",
       "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next"
     },
 
-    "keyboard-state": {
-      "capslock": true,
-      "format": "{name} {icon}",
-      "format-icons": { "locked": "󰌾", "unlocked": "󰍀" }
-    },
-
     "user": {
-      "format": " <span color='#8bd5ca'>{user}</span> (up <span color='#f5bde6'>{work_d} d</span> <span color='#8aadf4'>{work_H} h</span> <span color='#eed49f'>{work_M} min</span> <span color='#a6da95'>↑</span>)",
+      "format": " <span color='#8bd5ca'>{user}</span> UPTIME: <span color='#eed49f'>{work_M}M</span> <span color='#8aadf4'>{work_H}H</span> <span color='#f5bde6'>{work_d}D</span>",
       "icon": true
     }
   },
 
   ////////////////////////////////////////////////////////////////////////
-  // LEFT BAR (VERTICAL DASH) — optional, comment out if you don’t want it
+  // LEFT BAR (VERTICAL DASH)
   ////////////////////////////////////////////////////////////////////////
   {
-    // ===== Main =====
     "name": "left_bar",
     "layer": "top",
     "position": "left",
@@ -223,21 +196,16 @@
     "margin-top": 10,
     "margin-bottom": 10,
 
-    // ===== Layout =====
     "modules-left": ["wlr/taskbar"],
     "modules-center": [
-      "cpu",
-      "memory",
-      "disk",
       "temperature",
       "battery",
       "backlight",
       "pulseaudio",
       "systemd-failed-units"
     ],
-    "modules-right": ["tray"],
+    "modules-right": [],
 
-    // ===================== Modules: Apps & Tray =====================
     "wlr/taskbar": {
       "format": "{icon}",
       "icon-size": 20,
@@ -248,67 +216,29 @@
       "on-click-middle": "fullscreen"
     },
 
-    "tray": { "icon-size": 20, "spacing": 2 },
-
-    // ===================== Modules: System Stats =====================
-    "cpu": {
-      "format": "󰻠{usage}%",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "on-click": "alacritty -e btop",
-      "on-click-right": "alacritty -e btm"
-    },
-
-    "memory": {
-      "format": "󰍛{percentage}%",
-      "tooltip-format": "Main: ({used} GiB/{total} GiB)({percentage}%), available {avail} GiB\nSwap: ({swapUsed} GiB/{swapTotal} GiB)({swapPercentage}%), available {swapAvail} GiB",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "on-click": "alacritty -e btop",
-      "on-click-right": "alacritty -e btm"
-    },
-
-    "disk": {
-      "format": "󰋊{percentage_used}%",
-      "tooltip-format": "({used}/{total})({percentage_used}%) in '{path}', available {free}({percentage_free}%)",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "on-click": "alacritty -e btop",
-      "on-click-right": "alacritty -e btm"
-    },
 
     "temperature": {
       "tooltip": false,
-      // If this thermal zone is wrong for your machine, try removing this key or using `ls /sys/class/thermal/thermal_zone*/temp`
       "thermal-zone": 8,
       "critical-threshold": 80,
-      "format": "{icon}{temperatureC}󰔄",
+      "format": "{icon} {temperatureC}󰔄",
       "format-critical": "🔥{icon}{temperatureC}󰔄",
       "format-icons": ["", ""]
     },
 
     "battery": {
       "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "format": "{icon}{capacity}%",
-      "format-charging": "󱐋{icon}{capacity}%",
-      "format-plugged": "󰚥{icon}{capacity}%",
+      "format": "{icon} {capacity}%",
+      "format-charging": "󱐋 {icon}{capacity}%",
+      "format-plugged": "󰚥 {icon}{capacity}%",
       "format-time": "{H} h {M} min",
-      "format-icons": ["󱃍", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+      "format-icons": ["󱃍","󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"],
       "tooltip-format": "{timeTo}"
     },
 
     "backlight": {
-      "format": "{icon}{percent}%",
-      "format-icons": [
-        "󰌶",
-        "󱩎",
-        "󱩏",
-        "󱩐",
-        "󱩑",
-        "󱩒",
-        "󱩓",
-        "󱩔",
-        "󱩕",
-        "󱩖",
-        "󰛨"
-      ],
+      "format": "{icon} {percent}%",
+      "format-icons": ["󰌶","󱩎","󱩏","󱩐","󱩑","󱩒","󱩓","󱩔","󱩕","󱩖","󰛨"],
       "tooltip": false,
       "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
       "reverse-scrolling": true,
@@ -318,12 +248,12 @@
     "pulseaudio": {
       "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
       "tooltip-format": "{desc}",
-      "format": "{icon}{volume}%\n{format_source}",
-      "format-bluetooth": "󰂱{icon}{volume}%\n{format_source}",
-      "format-bluetooth-muted": "󰂱󰝟{volume}%\n{format_source}",
-      "format-muted": "󰝟{volume}%\n{format_source}",
-      "format-source": "󰍬{volume}%",
-      "format-source-muted": "󰍭{volume}%",
+      "format": "{icon} {volume}%\n{format_source}",
+      "format-bluetooth": "󰂱{icon} {volume}%\n{format_source}",
+      "format-bluetooth-muted": "󰂱 󰝟 {volume}%\n{format_source}",
+      "format-muted": "󰝟 {volume}%\n{format_source}",
+      "format-source": "󰍬 {volume}%",
+      "format-source-muted": "󰍭 {volume}%",
       "format-icons": {
         "headphone": "󰋋",
         "hands-free": "",
@@ -334,7 +264,7 @@
         "speaker": "󰓃",
         "hdmi": "󰡁",
         "hifi": "󰋌",
-        "default": ["󰕿", "󰖀", "󰕾"]
+        "default": ["󰕿","󰖀","󰕾"]
       },
       "reverse-scrolling": true,
       "reverse-mouse-scrolling": true,

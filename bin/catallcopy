@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$HOME/.OS"
+~/.OS/bin/catall.sh | wl-copy

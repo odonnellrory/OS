@@ -1,0 +1,15 @@
+# ~/.local/bin/yazi-cd
+#!/usr/bin/env bash
+tmp="$(mktemp -t yazi-cwd.XXXXXX)"
+yazi "$@" --cwd-file="$tmp"
+
+cwd=""
+IFS= read -r -d '' cwd < "$tmp" || true
+rm -f -- "$tmp"
+
+if [ -n "$cwd" ] && [ -d "$cwd" ]; then
+  cd -- "$cwd"
+fi
+
+exec "${SHELL:-/bin/zsh}"
+
