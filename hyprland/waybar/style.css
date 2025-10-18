@@ -1,87 +1,65 @@
-/************************************************************
- * CYBERPUNK NEON — Waybar CSS (fixed for GTK/Waybar)
- * - mix(): use 0–1 ratio (not %)
- * - remove @media (GTK3 parser)
- * - keep selectors tight for your named bars
- ************************************************************/
+/**************
+ * Base theme *
+ **************/
+@define-color bg      rgba(20,22,30,0.80);
+@define-color bg-alt  rgba(20,22,30,0.55);
+@define-color text    #cad3f5;   /* matches your palette */
+@define-color accent  #a6da95;
+@define-color accent2 #c6a0f6;
+@define-color warn    #eed49f;
+@define-color err     #ed8796;
 
-/* ===================== Palette ===================== */
-@define-color bg            rgba(10, 8, 15, 0.45);
-@define-color bg-strong     rgba(10, 8, 15, 0.72);
-@define-color chip          rgba(22, 14, 28, 0.55);
-@define-color chip-hover    rgba(32, 12, 32, 0.65);
-
-@define-color text          #EDE7F7;
-@define-color subtle        #B8A8D9;
-
-@define-color neon          #FF0A54;
-@define-color neon-2        #A100FF;
-@define-color neon-3        #FF3EC8;
-
-@define-color warn          #FF7A00;
-@define-color err           #FF2B4F;
-
-/* ====== Global type ====== */
 * {
-  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
-  font-weight: 500;           /* 450 is invalid in GTK */
+  font-family: "Cozette", "Terminus", monospace;
   font-size: 12.5pt;
-  color: @text;
+  min-height: 0;
 }
 
-/* ===================== Windows (bars) ===================== */
-window#waybar { background: transparent; }
-
-/* Scope by your “name” fields: top_bar / bottom_bar / left_bar */
-window#waybar.top_bar,
-window#waybar.bottom_bar,
-window#waybar.left_bar {
-  background: linear-gradient(135deg, alpha(@bg-strong, .92), alpha(@bg, .92));
-  border-radius: 16px;
-  border: 1px solid alpha(@neon-2, .35);
-  /* Softer shadows: still glowy, less GPU cost */
-  box-shadow:
-    inset 0 0 0 1px alpha(@neon, .12),
-    0 0 14px alpha(@neon-2, .22),
-    0 0 32px alpha(@neon-3, .10);
-}
-
-/* Top */
-window#waybar.top_bar {
-  margin: 8px 10px 4px 10px;
-  padding: 6px 10px;
-}
-
-/* Bottom */
-window#waybar.bottom_bar {
-  margin: 4px 10px 8px 10px;
-  padding: 5px 10px;
-  border-radius: 14px;
-  border-color: alpha(@neon, .28);
-}
-
-/* Left (vertical) */
-window#waybar.left_bar {
-  margin: 10px;
-  padding: 8px 6px;
-  border-color: alpha(@neon-3, .28);
-}
-
-/* ===================== Tooltips ===================== */
 tooltip {
-  background: linear-gradient(180deg, alpha(@bg-strong, .98), alpha(@bg, .98));
+  background: @bg;
   color: @text;
-  border: 1px solid alpha(@neon-2, .45);
-  border-radius: 12px;
-  box-shadow:
-    0 0 12px alpha(@neon-2, .30),
-    0 0 24px alpha(@neon-3, .18);
+  border: 1px solid @accent2;
+  border-radius: 10px;
 }
 
-/* ===================== Module blocks ===================== */
-/* Note: custom modules use id form #custom-<name>, so your “custom/separator_dot”
-   becomes #custom-separator_dot (you already had this right). */
+/****************
+ * Bar surfaces *
+ ****************/
+window#waybar {
+  background: transparent; /* we’ll style per-bar */
+  color: @text;
+}
 
+/* Top bar */
+window#waybar.top_bar {
+  background: @bg;
+  border: 1px solid @bg-alt;
+  border-radius: 14px;
+  margin: 6px 8px;
+  padding: 4px 8px;
+}
+
+/* Bottom bar (thin status strip) */
+window#waybar.bottom_bar {
+  background: @bg-alt;
+  border-top: 1px solid @bg;
+  margin: 0 8px 6px 8px;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+/* Left vertical bar */
+window#waybar.left_bar {
+  background: @bg;
+  border: 1px solid @bg-alt;
+  border-radius: 16px;
+  margin: 10px;
+  padding: 6px;
+}
+
+/*****************
+ * Module blocks *
+ *****************/
 #workspaces button,
 #clock,
 #custom-separator,
@@ -100,13 +78,13 @@ tooltip {
 #taskbar,
 #cpu, #memory, #disk, #temperature, #battery, #backlight, #pulseaudio, #systemd-failed-units,
 #tray {
-  background: @chip;
-  border: 1px solid alpha(@neon-2, .22);
-  border-radius: 12px;
-  padding: 6px 12px;
-  margin: 4px 6px;
+  padding: 6px 10px;
+  margin: 3px 4px;
+  background: transparent;
+  border-radius: 10px;
 }
 
+/* Subtle chip background on hover */
 #workspaces button:hover,
 #bluetooth:hover,
 #network:hover,
@@ -114,140 +92,100 @@ tooltip {
 #pulseaudio:hover,
 #idle_inhibitor:hover,
 #custom-logout_menu:hover,
-#taskbar button:hover,
-#tray:hover,
-#clock:hover {
-  background: @chip-hover;
-  border-color: alpha(@neon-3, .45);
-  box-shadow:
-    0 0 10px alpha(@neon, .40),
-    0 0 20px alpha(@neon-2, .22);
+#taskbar button:hover {
+  background: @bg-alt;
 }
 
-/* Lighter text accents */
-#cpu, #memory, #disk, #temperature, #battery, #backlight, #systemd-failed-units {
-  color: @subtle;
+/***************
+ * Workspaces  *
+ ***************/
+#workspaces {
+  margin-left: 4px;
 }
-
-/* ===================== Workspaces ===================== */
-#workspaces { padding-left: 2px; }
 
 #workspaces button {
-  font-weight: 700;
-  border: 1px solid transparent;
+  font-weight: 600;
   color: @text;
-  background: radial-gradient(120% 150% at 0% 0%,
-    alpha(@neon-2, .10) 0%,
-    alpha(@chip, 1.0) 55%);
+  border: 1px solid transparent;
 }
 
 #workspaces button.active {
-  color: @text;
-  border-color: alpha(@neon, .55);
-  background: linear-gradient(135deg,
-    alpha(@neon-2, .25) 0%,
-    alpha(@chip, 0.85) 60%);
-  box-shadow:
-    0 0 10px alpha(@neon, .50),
-    inset 0 0 12px alpha(@neon-2, .22);
+  background: @bg-alt;
+  border: 1px solid @accent2;
+  color: @accent2;
 }
 
 #workspaces button.urgent {
-  color: @text;
-  border-color: alpha(@err, .85);
-  background: alpha(@err, .20);
-  box-shadow:
-    0 0 12px alpha(@err, .55),
-    inset 0 0 18px alpha(@err, .25);
+  background: alpha(@err, 0.2);
+  border: 1px solid @err;
+  color: @err;
 }
 
-/* ===================== Clocks ===================== */
-/* mix() ratio fixed: 0–1 instead of % */
-#clock.time { color: @neon; font-weight: 800; }
-#clock.week { color: mix(@neon-2, @text, 0.60); }
-#clock.month { color: mix(@neon-3, @text, 0.60); }
+/************
+ * Clocks   *
+ ************/
+/* You gave each clock an instance id; style them separately */
+#clock.time { color: @accent; font-weight: 700; }
+#clock.week { color: @accent2; }
+#clock.month { color: #8bd5ca; }
 #clock.calendar { color: @text; }
 
-/* Decorative separators */
-#custom-separator, #custom-separator_dot {
-  padding: 0 8px;
-  color: alpha(@text, .65);
-}
-
-/* ===================== Net / BT / Audio ===================== */
-#network { color: mix(@neon, @text, 0.70); }
-#network.disconnected { color: @err; border-color: alpha(@err, .55); }
-#bluetooth { color: mix(@neon-2, @text, 0.70); }
-
-#pulseaudio { color: @text; }
-#pulseaudio.muted {
-  color: alpha(@text, .55);
-  border-color: alpha(@neon-2, .18);
-}
+/*****************
+ * Net & BT & AU *
+ *****************/
+#network { color: #8aadf4; }
+#network.disconnected { color: @err; }
+#bluetooth { color: #91d7e3; }
+#pulseaudio.muted { color: @warn; opacity: 0.8; }
 #pulseaudio.bluetooth,
-#pulseaudio.bluetooth-muted { color: mix(@neon-3, @text, 0.70); }
+#pulseaudio.bluetooth-muted { color: #91d7e3; }
 
-/* ===================== System row ===================== */
-#cpu         { color: mix(@neon,   @text, 0.55); }
-#memory      { color: mix(@neon-2, @text, 0.55); }
-#disk        { color: mix(@neon-3, @text, 0.55); }
-#temperature { color: @warn; }
-#temperature.critical {
-  color: @err;
-  border-color: alpha(@err, .75);
-  box-shadow: 0 0 16px alpha(@err, .40);
-}
-#battery { color: mix(@neon, @text, 0.65); }
-#battery.charging { color: @neon; }
-#battery.critical:not(.charging) {
-  color: @err;
-  border-color: alpha(@err, .75);
-}
+/**************
+ * System row *
+ **************/
+#cpu { color: #f5a97f; }
+#memory { color: #f4dbd6; }
+#disk { color: #c6a0f6; }
+#temperature { color: #eed49f; }
+#temperature.critical { color: @err; font-weight: 700; }
+#battery { color: #a6da95; }
+#battery.critical:not(.charging) { color: @err; }
+#backlight { color: #eed49f; }
+#systemd-failed-units { color: @err; }
 
-/* ===================== Taskbar ===================== */
+/************
+ * Taskbar  *
+ ************/
 #taskbar button {
-  padding: 10px;
-  margin: 5px;
+  padding: 8px;
+  margin: 4px;
   border-radius: 12px;
-  background: @chip;
-  border: 1px solid alpha(@neon-2, .18);
+  background: transparent;
+  border: 1px solid transparent;
 }
-#taskbar button:hover {
-  background: @chip-hover;
-  border-color: alpha(@neon-3, .45);
-}
+
 #taskbar button.active {
-  background: linear-gradient(145deg,
-    alpha(@neon-2, .18) 0%,
-    alpha(@chip, .95) 55%);
-  border-color: alpha(@neon, .50);
-  box-shadow:
-    0 0 12px alpha(@neon, .40),
-    inset 0 0 14px alpha(@neon-2, .18);
+  background: @bg-alt;
+  border: 1px solid @accent;
 }
 
-/* ===================== Window title ===================== */
+/***********
+ * Misc    *
+ ***********/
+#idle_inhibitor.activated { color: @accent; }
+#privacy { color: #8bd5ca; }
+#custom-logout_menu { color: @err; }
+
+/* Thin separators you added as custom modules */
+#custom-separator, #custom-separator_dot {
+  padding: 0 6px;
+  opacity: 0.65;
+}
+
+/* Title shrink to avoid overflow in bottom bar */
 #window {
+  padding-left: 12px;
+  padding-right: 12px;
   min-width: 0;
-  padding: 6px 14px;
-  font-weight: 600;
-  color: @text;
 }
-
-/* ===================== User / Language / Submap ===================== */
-#user         { color: mix(@neon-3, @text, 0.70); }
-#language     { color: mix(@neon-2, @text, 0.75); }
-#submap       { color: mix(@neon,   @text, 0.75); }
-
-/* ===================== Tray & Logout ===================== */
-#tray { background: @chip; }
-#custom-logout_menu {
-  color: @err;
-  border-color: alpha(@err, .55);
-}
-
-/* ===== Removed @media block (GTK doesn't support it reliably) ===== */
-/* If you want “compact” mode, bind an alt stylesheet and swap with SIGUSR2:
-   waybar -s ~/.config/waybar/style-compact.css
-*/
 

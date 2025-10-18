@@ -1,277 +1,75 @@
 [
-  ////////////////////////////////////////////////////////////////////////
-  // TOP BAR
-  ////////////////////////////////////////////////////////////////////////
   {
-    // ===== Main =====
-    "name": "top_bar",
+    "name": "bar",
     "layer": "top",
     "position": "top",
-    "height": 36,
-    "spacing": 4,
+    "height": 30,
+    "spacing": 6,
 
-    // ===== Layout =====
-    "modules-left": ["hyprland/workspaces", "hyprland/submap"],
-    "modules-center": [
-      //"clock#time",
-      //"custom/separator",
-      "clock#week",
-      "custom/separator_dot",
-      "clock#month",
-      "custom/separator",
-      "clock#calendar"
-    ],
-    "modules-right": ["cpu",
-      "memory",
-      "disk", "bluetooth", "network", "group/tray_toggle", "custom/logout_menu"],
+    "modules-left": ["hyprland/workspaces", "clock"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["pulseaudio", "network", "tray", "battery", "custom/power"],
 
-    // ===== Tray toggle group =====
-    "group/tray_toggle": {
-      "orientation": "horizontal",
-      "modules": [
-      "tray" 
-      ],
-      "drawer": {
-        "transition-duration": 150,
-        "transition-left-to-right": false
-      },
-      "format": "󰍡",          // icon shown on the bar
-      "on-click": "toggle",
-      "start-collapsed": true
-    },
-
-    // The actual tray shown/hidden by the group
-    "tray": { "icon-size": 20, "spacing": 2 },
-
-    // ===================== Modules: Hyprland =====================
     "hyprland/workspaces": {
       "on-click": "activate",
       "format": "{icon}",
+      "show-special": false,
       "format-icons": {
-        "1": "一", "2": "二", "3": "三", "4": "四", "5": "五",
-        "6": "六", "7": "七", "8": "八", "9": "九", "10": "十",
-        "special": "〇", "11": "十一",
-  "12": "十二",
-  "13": "十三",
-  "14": "十四",
-  "15": "十五",
-  "16": "十六",
-  "17": "十七",
-  "18": "十八",
-  "19": "十九",
-  "20": "二十"
-      },
-      "show-special": true,
-      "persistent-workspaces": { "*": 10 }
-    },
-
-    "hyprland/submap": {
-      "format": "<span color='#a6da95'>Mode:</span> {}",
-      "tooltip": false
-    },
-
-    // ===================== Modules: Clocks =====================
-    "clock#time": { "format": "{:%I:%M %p %Ez}" },
-    "custom/separator": { "format": "|", "tooltip": false },
-    "custom/separator_dot": { "format": "•", "tooltip": false },
-    "clock#week": { "format": "{:%a}" },
-    "clock#month": { "format": "{:%h}" },
-    "clock#calendar": {
-      "format": "{:%F}",
-      "tooltip-format": "<tt><small>{calendar}</small></tt>",
-      "actions": { "on-click-right": "mode" },
-      "calendar": {
-        "mode": "month",
-        "mode-mon-col": 3,
-        "weeks-pos": "right",
-        "on-scroll": 1,
-        "on-click-right": "mode",
-        "format": {
-          "months": "<span color='#f4dbd6'><b>{}</b></span>",
-          "days": "<span color='#cad3f5'><b>{}</b></span>",
-          "weeks": "<span color='#c6a0f6'><b>W{}</b></span>",
-          "weekdays": "<span color='#a6da95'><b>{}</b></span>",
-          "today": "<span color='#8bd5ca'><b><u>{}</u></b></span>"
-        }
+        "1": "一",
+        "2": "二",
+        "3": "三",
+        "4": "四",
+        "5": "五",
+        "6": "六",
+        "7": "七",
+        "8": "八",
+        "9": "九",
+        "10": "十"
       }
     },
 
-    // ===================== Modules: Bluetooth / Network =====================
-    "bluetooth": {
-      "format": "BT",
-      "format-disabled": "BT: OFF",
-      "format-connected": "BT CONNECTED: {device_alias}",
-      "format-connected-battery": "󰂱 {device_alias} (󰥉 {device_battery_percentage}%)",
-      "tooltip-format": "{controller_alias}\t{controller_address} ({status})\n\n{num_connections} connected",
-      "tooltip-format-disabled": "bluetooth off",
-      "tooltip-format-connected": "{controller_alias}\t{controller_address} ({status})\n\n{num_connections} connected\n\n{device_enumerate}",
-      "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-      "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t({device_battery_percentage}%)",
-      "max-length": 35,
-      "on-click": "blueman-manager",
-      "on-click-right": "bluetoothctl devices Connected"
-    },
-
-    "network": {
-      "format": "Wi-Fi",
-      "format-wifi": "{icon}({signalStrength}%){essid}",
-      "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
-      "format-disconnected": "󰤫 Disconnected",
-      "tooltip-format": "wifi <span color='#ee99a0'>off</span>",
-      "tooltip-format-wifi": "SSID: {essid}({signalStrength}%), {frequency} MHz\nInterface: {ifname}\nIP: {ipaddr}\nGW: {gwaddr}\n\n<span color='#a6da95'>{bandwidthUpBits}</span>\t<span color='#ee99a0'>{bandwidthDownBits}</span>\t<span color='#c6a0f6'>󰹹{bandwidthTotalBits}</span>",
-      "tooltip-format-disconnected": "<span color='#ed8796'>disconnected</span>",
-      "max-length": 35,
-      "on-click": "nm-connection-editor",
-      "on-click-right": ""
-    },
-
-
-
-
-    "cpu": {
-      "format": "CPU {usage}%",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
-    },
-
-    "memory": {
-      "format": "RAM {percentage}%",
-      "tooltip-format": "Main: ({used} GiB/{total} GiB)({percentage}%), available {avail} GiB\nSwap: ({swapUsed} GiB/{swapTotal} GiB)({swapPercentage}%), available {swapAvail} GiB",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
-    },
-
-    "disk": {
-      "format": "DISK {percentage_used}%",
-      "tooltip-format": "({used}/{total})({percentage_used}%) in '{path}', available {free}({percentage_free}%)",
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 }
-    },
-
-
-
-    // ===================== Modules: Simple logout =====================
-    "custom/logout_menu": {
-      "return-type": "json",
-      "exec": "echo '{ \"text\":\"󰐥\", \"tooltip\": \"logout / power menu\" }'",
-      "interval": "once",
-      "on-click": "wlogout || pkill -SIGUSR1 swaylock || hyprctl dispatch exit 0"
-    }
-  },
-
-  ////////////////////////////////////////////////////////////////////////
-  // BOTTOM BAR
-  ////////////////////////////////////////////////////////////////////////
-  {
-    "name": "bottom_bar",
-    "layer": "top",
-    "position": "bottom",
-    "height": 36,
-    "spacing": 4,
-
-    "modules-left": ["user"],
-    "modules-center": ["hyprland/window"],
-    "modules-right": ["hyprland/language"],
-
-    "hyprland/window": { "format": "{title}", "max-length": 50 },
-
-    "hyprland/language": {
-      "format-en": "󱄅  Nix OS | ENG (UK)",
-      "keyboard-name": "at-translated-set-2-keyboard",
-      "on-click": "hyprctl switchxkblayout at-translated-set-2-keyboard next"
-    },
-
-    "user": {
-      "format": " <span color='#8bd5ca'>{user}</span> UPTIME: <span color='#eed49f'>{work_M}M</span> <span color='#8aadf4'>{work_H}H</span> <span color='#f5bde6'>{work_d}D</span>",
-      "icon": true
-    }
-  },
-
-  ////////////////////////////////////////////////////////////////////////
-  // LEFT BAR (VERTICAL DASH)
-  ////////////////////////////////////////////////////////////////////////
-  {
-    "name": "left_bar",
-    "layer": "top",
-    "position": "left",
-    "spacing": 4,
-    "width": 75,
-    "margin-top": 10,
-    "margin-bottom": 10,
-
-    "modules-left": ["wlr/taskbar"],
-    "modules-center": [
-      "temperature",
-      "battery",
-      "backlight",
-      "pulseaudio",
-      "systemd-failed-units"
-    ],
-    "modules-right": [],
-
-    "wlr/taskbar": {
-      "format": "{icon}",
-      "icon-size": 20,
-      "icon-theme": "Numix-Circle",
-      "tooltip-format": "{title}",
-      "on-click": "activate",
-      "on-click-right": "close",
-      "on-click-middle": "fullscreen"
-    },
-
-
-    "temperature": {
-      "tooltip": false,
-      "thermal-zone": 8,
-      "critical-threshold": 80,
-      "format": "{icon} {temperatureC}󰔄",
-      "format-critical": "🔥{icon}{temperatureC}󰔄",
-      "format-icons": ["", ""]
-    },
-
-    "battery": {
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "format": "{icon} {capacity}%",
-      "format-charging": "󱐋 {icon}{capacity}%",
-      "format-plugged": "󰚥 {icon}{capacity}%",
-      "format-time": "{H} h {M} min",
-      "format-icons": ["󱃍","󰁺","󰁻","󰁼","󰁽","󰁾","󰁿","󰂀","󰂁","󰂂","󰁹"],
-      "tooltip-format": "{timeTo}"
-    },
-
-    "backlight": {
-      "format": "{icon} {percent}%",
-      "format-icons": ["󰌶","󱩎","󱩏","󱩐","󱩑","󱩒","󱩓","󱩔","󱩕","󱩖","󰛨"],
-      "tooltip": false,
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "reverse-scrolling": true,
-      "reverse-mouse-scrolling": true
+    "hyprland/window": {
+      "format": "{title}",
+      "max-length": 60
     },
 
     "pulseaudio": {
-      "states": { "high": 90, "upper-medium": 70, "medium": 50, "lower-medium": 30, "low": 10 },
-      "tooltip-format": "{desc}",
-      "format": "{icon} {volume}%\n{format_source}",
-      "format-bluetooth": "󰂱{icon} {volume}%\n{format_source}",
-      "format-bluetooth-muted": "󰂱 󰝟 {volume}%\n{format_source}",
-      "format-muted": "󰝟 {volume}%\n{format_source}",
-      "format-source": "󰍬 {volume}%",
-      "format-source-muted": "󰍭 {volume}%",
-      "format-icons": {
-        "headphone": "󰋋",
-        "hands-free": "",
-        "headset": "󰋎",
-        "phone": "󰄜",
-        "portable": "󰦧",
-        "car": "󰄋",
-        "speaker": "󰓃",
-        "hdmi": "󰡁",
-        "hifi": "󰋌",
-        "default": ["󰕿","󰖀","󰕾"]
-      },
-      "reverse-scrolling": true,
-      "reverse-mouse-scrolling": true,
-      "on-click": "pavucontrol"
+      "format": "Vol: {volume}%",
+      "format-muted": "NO AUDIO",
+      "on-click": "pavucontrol",
+      "tooltip": false
     },
 
-    "systemd-failed-units": { "format": "✗ {nr_failed}" }
+    "network": {
+      "format-wifi": " {signalStrength}%",
+      "format-ethernet": "󰈀",
+      "format-disconnected": "󰤫",
+      "tooltip": false
+    },
+
+    "battery": {
+      "format": "󰁹 {capacity}%",
+      "format-charging": "󱐋 {capacity}%",
+      "tooltip": false
+    },
+
+    "clock": {
+      "format": "{:%y-%m-%d | %H:%M}",
+      "tooltip": false
+    },
+
+    "tray": {
+      "icon-size": 18,
+      "spacing": 6
+    },
+
+    "custom/power": {
+      "return-type": "json",
+      "exec": "echo '{\"text\":\"⏻\"}'",
+      "interval": "once",
+      "on-click": "wlogout || hyprctl dispatch exit 0",
+      "tooltip": false
+    }
   }
 ]
 
