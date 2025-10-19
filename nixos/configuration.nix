@@ -48,20 +48,12 @@
     
     ];
     
-    packages = with pkgs; [ 
-    
-    kdePackages.kate 
-    
-    ];
   
   };
 
   # ----------- # Programs # ----------- #
 
   programs.steam.enable = true;
-
-  programs.ssh.askPassword =
-    lib.mkForce "${pkgs.kdePackages.ksshaskpass}/bin/ksshaskpass";
 
   programs.git.enable = true;
 
@@ -103,9 +95,6 @@
     networkmanagerapplet   
     blueman                
     pavucontrol
-
-    kdePackages.breeze          
-    numix-icon-theme-circle      
 
     playerctl brightnessctl grim slurp wl-clipboard wlogout
 

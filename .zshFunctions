@@ -1,3 +1,86 @@
+# cd to World of Warcraft AddOns (classic era default)
+wowcd() {
+  emulate -L zsh -o errexit -o nounset -o pipefail
+
+  local wowbase="$HOME/Omni/Ludi/drive_c/Program Files (x86)/World of Warcraft"
+  local flavor="${1:-}"
+
+  case "${flavor:l}" in
+    retail|r|_retail_)
+      flavor="_retail_"
+      ;;
+    classic|era|_classic_era_|c|e)
+      flavor="_classic_era_"
+      ;;
+    "")
+      print "Choose WoW flavor:"
+      print "  1) Classic Era (default)"
+      print "  2) Retail"
+      read "?Enter number [default 1]: " choice
+      case "${choice:-1}" in
+        1|"") flavor="_classic_era_";;
+        2) flavor="_retail_";;
+        *)
+          print "Invalid choice; defaulting to Classic Era."
+          flavor="_classic_era_"
+          ;;
+      esac
+      ;;
+    *)
+      print -u2 -- "Unknown flavor: ${1}. Use 'retail' or 'classic'."
+      return 2
+      ;;
+  esac
+
+  local target="${wowbase}/${flavor}/Interface/AddOns"
+  if [[ -d "$target" ]]; then
+    cd -- "$target"
+    print -- "→ ${PWD}"
+  else
+    print -u2 -- "Missing directory: $target"
+    return 1
+  fi
+}
+
+# Open (or create) a journal entry in Neovim.
+# Usage: journal [YYYY-MM-DD|yesterday|tomorrow]
+odonnellrorynew() {
+  local repo="$HOME/Omni/Basilica/odonnellrory.github.io"
+  local dir="$repo/docs/00-journal"
+  local date_str file
+
+  if [[ -n "${1:-}" ]]; then
+    case "$1" in
+      yesterday) date_str="$(date -d 'yesterday' +%F)" ;;
+      tomorrow)  date_str="$(date -d 'tomorrow'  +%F)" ;;
+      # YYYY-MM-DD
+      [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) date_str="$1" ;;
+      *)
+        print -u2 "journal: pass YYYY-MM-DD, 'yesterday', or 'tomorrow'"
+        return 2
+        ;;
+    esac
+  else
+    date_str="$(date +%F)"
+  fi
+
+  mkdir -p -- "$dir"
+  file="$dir/$date_str.md"
+
+  # Create a simple header if it's a new file
+  if [[ ! -e "$file" ]]; then
+    {
+      printf '# %s\n\n' "$(date -d "$date_str" +%Y/%m/%d)"
+    } > "$file"
+  fi
+
+  cd -- "$repo" || return
+  nvim -- "$file"
+}
+
+
+
+
 #Rust Book guessing game
 guessing_game() {
   cd ~/Projects/Rust/guessing_game/ && cargo run
